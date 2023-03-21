@@ -4,6 +4,7 @@
 
 double operate(struct options options){
     double res=0;
+    // пространства имен Чтобы распределить классы/функции/объекты со схожими именами без конфлик,к принадлежность к определённой категории.
     std::string operate = options.operation;
     if(operate=="+")
         res=options.num1+options.num2;

@@ -5,11 +5,15 @@
 #define ERROR 98765e-99
 #define range 20
 // работа после экспоненты
+// :: - оператор доступа к контексту
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    //сигнал это то что мы можем нажать
+    //слот - это функция то что делается во время нажатия на кнопку поступая сигнал
+    //коннект-  соединияет кнопку с текущем объектом по указанному сигналу и взамодействие описано в слоте
     connect(ui->btn_num_0,SIGNAL(clicked()),this, SLOT(click_num()));
     connect(ui->btn_num_1,SIGNAL(clicked()),this, SLOT(click_num()));
     connect(ui->btn_num_2,SIGNAL(clicked()),this, SLOT(click_num()));
@@ -27,10 +31,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->btn_div, SIGNAL(clicked()),this, SLOT(btn_click_operation()));
 
 }
-
+//QObject -The QObject class is the base class of all Qt objects
 MainWindow::~MainWindow()
 {
-    delete ui;
+    delete ui; // очистка памяти под ui
 }
 void MainWindow:: condition_Button_Number(bool statement)
 {
@@ -56,7 +60,6 @@ void MainWindow :: condition_Button_Options(bool statement)
 
 void MainWindow:: click_num()
 {
-    //ui наш вид виджета посылаем запрос на лабел инсер на котором если 0 то текст просто становится,  либо дописывается - либо заменяется на новое число которое будет дописыватся
     QPushButton *btn = (QPushButton *) sender(); //sender тип данных QObject* (класс, вокруг которого построена объектная модель Qt)
     ui->btn_negative->setEnabled(false);
     condition_Button_Options(true);
@@ -75,6 +78,7 @@ void MainWindow:: click_num()
             ui->btn_dot->setEnabled(true);
     }
 }
+// Main window - класс предоставляющий главное окно
 void MainWindow::btn_click_operation(){
     QPushButton *btn =(QPushButton*)sender();
     //ui->btn_dot->setEnabled(false);
@@ -118,9 +122,9 @@ void MainWindow::on_btn_help_clicked()
     QMessageBox::information(this,tr("Helper"), tr("1)Dont to divide by zero\n"
                                                    "2)Dont insert number upper twenty signs\n"
                                                    "3)Boop--boop\n"),
-                             tr("close"));// information c целью информирования а this указатель на экземпляр класса
+                             tr("close"));// information c целью информирования а this указатель на экземпляр класса (question critc war
 }
-
+// this = указатель на объект в котором происходит выполнение данного метода или экземпляр класса
 void MainWindow::on_btn_clear_clicked()
 {
     ui->insert_label->setText("");
@@ -134,18 +138,18 @@ void MainWindow::on_btn_clear_clicked()
 }
 
 QString MainWindow::actions(QString num1, QString num2, QString operation){
-    struct options options;
-    options.num1=num1.toDouble();
+    struct options options; // создаем структуру опшионнс
+    options.num1=num1.toDouble(); // записываем в структуру цифры в типе дабл
     options.num2=num2.toDouble();
-    QByteArray var = operation.toLatin1();
-    options.operation= var.data();
-    double result=operate(options);
-    if(result==ERROR){
+    QByteArray var = operation.toLatin1(); // явное приведение из qstring в char* qbytearray - массив байтов
+    options.operation= var.data(); //запись операции
+    double result=operate(options); // в ресалт записываем операцию из функции операция
+    if(result==ERROR){ // ошибка если очитска прошлого сегмента в структуре -> num2
         QMessageBox::information(this,"Error code", "I dont div by zero");
         this->on_btn_clear_clicked();
     }
     else
-        num1=QString::number(result);
+        num1=QString::number(result); // приведение дабл к qs
     return num1;
 }
 
